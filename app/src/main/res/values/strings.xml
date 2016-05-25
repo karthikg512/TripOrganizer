@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Trip Organizer</string>
+    <string name="intro_text">Organize your trips!!</string>
+    <string name="trips_activity_display_message">Trips involved</string>
+</resources>
