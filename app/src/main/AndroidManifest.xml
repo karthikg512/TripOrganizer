@@ -17,13 +17,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.DisplayTripsActivity"
+        <activity
+            android:name=".activities.DisplayTripsActivity"
             android:label="@string/trips_activity_display_message"
-            android:parentActivityName="com.ks.triporganizer.activities.LoginActivity">
+            android:parentActivityName=".activities.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ks.triporganizer.activities.LoginActivity" />
         </activity>
+        <activity
+            android:name=".activities.TripDetailsActivity"
+            android:label="@string/title_activity_trip_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AddTripActivity"
+            android:label="@string/title_activity_add_trip"
+            android:parentActivityName=".activities.DisplayTripsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ks.triporganizer.activities.DisplayTripsActivity" />
+        </activity>
+        <activity
+            android:name=".activities.AddUsersToTripActivity"
+            android:label="@string/title_activity_add_users_to_trip"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

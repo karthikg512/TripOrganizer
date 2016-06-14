@@ -3,14 +3,14 @@ package com.ks.triporganizer.activities;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ks.triporganizer.R;
@@ -26,8 +26,10 @@ import java.util.List;
 public class DisplayTripsActivity extends ListActivity {
 
     RestTemplate restTemplate = new RestTemplate();
-    ArrayList<String> listItems=new ArrayList<String>();
+    List<String> listItems= new ArrayList<String>();
     ArrayAdapter<String> adapter;
+    ListView listView;
+    public final static String TRIP_NAME = "com.ks.triporganizer.activities.TRIP_NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +42,30 @@ public class DisplayTripsActivity extends ListActivity {
         adapter=new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
-        setListAdapter(adapter);
+
+        listView = getListView(); // OR (ListView) findViewById(android.R.id.list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(mMessageClickedHandler);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTrip();
+            }
+        });
 
         // get list of trips based on email
         new HttpRequestTask().execute();
 
     }
 
+    private void addTrip() {
+        Intent intent = new Intent(getApplicationContext(), AddTripActivity.class);
+        startActivity(intent);
+    }
+
+    // TODO : Refactor to resuse
     private class HttpRequestTask extends AsyncTask<Void, Void, Trip[]> {
         @Override
         protected Trip[] doInBackground(Void... params) {
@@ -54,8 +73,7 @@ public class DisplayTripsActivity extends ListActivity {
                 final String url = "http://10.0.2.2:8080/trip-organizer/team/1";
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 ResponseEntity<Trip[]> responseEntity = restTemplate.getForEntity(url, Trip[].class);
-                Trip[] trips = responseEntity.getBody();
-                return trips;
+                return responseEntity.getBody();
             } catch (Exception e) {
                 Log.e("DisplayTripsActivity", e.getMessage(), e);
             }
@@ -77,4 +95,15 @@ public class DisplayTripsActivity extends ListActivity {
         }
 
     }
+
+    // Create a message handling object as an anonymous class.
+    private AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView parent, View v, int position, long id) {
+            Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
+            String tripName = (String)((TextView)v).getText();
+            intent.putExtra(TRIP_NAME, tripName);
+            startActivity(intent);
+        }
+    };
+
 }
