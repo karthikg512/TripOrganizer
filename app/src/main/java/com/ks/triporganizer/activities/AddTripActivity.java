@@ -1,11 +1,13 @@
 package com.ks.triporganizer.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -13,13 +15,19 @@ import com.ks.triporganizer.R;
 import com.ks.triporganizer.pojo.Trip;
 import com.ks.triporganizer.pojo.TripDetails;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
 public class AddTripActivity extends AppCompatActivity {
 
-    public final static String TRIP_DETAILS = "com.ks.triporganizer.activities.TRIP_DETAILS";
+    public final static String TRIP = "com.ks.triporganizer.activities.TRIP";
+    Trip trip = new Trip();
+    RestTemplate restTemplate = new RestTemplate();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +59,38 @@ public class AddTripActivity extends AppCompatActivity {
         start.set(Integer.parseInt(edDate[2]), Integer.parseInt(edDate[0]), Integer.parseInt(edDate[1]));
         Date endDate = start.getTime();
 
-        Trip trip = new Trip();
         trip.setTripName(name);
         trip.setPurpose(purpose);
         trip.setDestination(destination);
         trip.setStartDate(startDate);
         trip.setEndDate(endDate);
 
-        TripDetails tripDetails = new TripDetails();
-        tripDetails.setTrip(trip);
+        new HttpRequestTask().execute();
 
-        Intent intent = new Intent(this, AddUsersToTripActivity.class);
-        intent.putExtra(TRIP_DETAILS, (Serializable) tripDetails);
-        startActivity(intent);
+    }
 
+    // TODO : Refactor to resuse
+    private class HttpRequestTask extends AsyncTask<Void, Void, Trip> {
+        @Override
+        protected Trip doInBackground(Void... params) {
+            try {
+                final String url = "http://10.0.2.2:8080/trip-organizer/trip";
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                ResponseEntity<Trip> responseEntity = restTemplate.postForEntity(url, trip, Trip.class);
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                Log.e("DisplayTripsActivity", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Trip trip) {
+            Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
+            intent.putExtra(TRIP, (Serializable) trip);
+            startActivity(intent);
+        }
     }
 
 }

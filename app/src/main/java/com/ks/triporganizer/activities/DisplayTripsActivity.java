@@ -21,6 +21,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 public class DisplayTripsActivity extends ListActivity {
@@ -29,7 +31,8 @@ public class DisplayTripsActivity extends ListActivity {
     List<String> listItems= new ArrayList<String>();
     ArrayAdapter<String> adapter;
     ListView listView;
-    public final static String TRIP_NAME = "com.ks.triporganizer.activities.TRIP_NAME";
+    public final static String TRIP_ID = "com.ks.triporganizer.activities.TRIP_ID";
+    Map<String, Long> tripNameToId = new HashMap<String, Long>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,7 @@ public class DisplayTripsActivity extends ListActivity {
 
             if (trips != null && trips.length > 0) {
                 for (Trip trip : trips) {
+                    tripNameToId.put(trip.getTripName(), trip.getId());
                     listItems.add(trip.getTripName());
                 }
                 adapter.notifyDataSetChanged();
@@ -101,7 +105,7 @@ public class DisplayTripsActivity extends ListActivity {
         public void onItemClick(AdapterView parent, View v, int position, long id) {
             Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
             String tripName = (String)((TextView)v).getText();
-            intent.putExtra(TRIP_NAME, tripName);
+            intent.putExtra(TRIP_ID, tripNameToId.get(tripName));
             startActivity(intent);
         }
     };

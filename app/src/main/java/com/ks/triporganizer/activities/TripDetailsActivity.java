@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.ks.triporganizer.R;
 import com.ks.triporganizer.pojo.Trip;
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 public class TripDetailsActivity extends AppCompatActivity {
 
     RestTemplate restTemplate = new RestTemplate();
+    long tripId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +31,8 @@ public class TripDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         Intent intent = getIntent();
-        String tripName = intent.getStringExtra(DisplayTripsActivity.TRIP_NAME);
+        tripId = intent.getLongExtra(DisplayTripsActivity.TRIP_ID, Long.MAX_VALUE);
 
         new HttpRequestTask().execute();
 
@@ -50,7 +43,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         @Override
         protected TripDetails doInBackground(Void... params) {
             try {
-                final String url = "http://10.0.2.2:8080/trip-organizer/trip/details/1";
+                final String url = "http://10.0.2.2:8080/trip-organizer/trip/details/"+tripId;
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 ResponseEntity<TripDetails> responseEntity = restTemplate.getForEntity(url, TripDetails.class);
                 return responseEntity.getBody();
@@ -63,8 +56,8 @@ public class TripDetailsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(TripDetails details) {
-            System.out.println(details.toString());
-
+            TextView tv = (TextView)findViewById(R.id.tdText);
+            tv.setText(details.getTrip().toString());
         }
     }
 }

@@ -38,10 +38,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ks.triporganizer.activities.DisplayTripsActivity" />
         </activity>
-        <activity
-            android:name=".activities.AddUsersToTripActivity"
-            android:label="@string/title_activity_add_users_to_trip"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
