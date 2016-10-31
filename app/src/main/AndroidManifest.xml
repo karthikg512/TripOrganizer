@@ -26,10 +26,6 @@
                 android:value="com.ks.triporganizer.activities.LoginActivity" />
         </activity>
         <activity
-            android:name=".activities.TripDetailsActivity"
-            android:label="@string/title_activity_trip_details"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.AddTripActivity"
             android:label="@string/title_activity_add_trip"
             android:parentActivityName=".activities.DisplayTripsActivity"
@@ -38,6 +34,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ks.triporganizer.activities.DisplayTripsActivity" />
         </activity>
+        <activity android:name=".activities.TripDetailsActivity"></activity>
     </application>
 
 </manifest>
