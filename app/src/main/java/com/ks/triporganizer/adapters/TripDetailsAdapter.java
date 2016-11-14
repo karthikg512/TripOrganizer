@@ -3,17 +3,20 @@ package com.ks.triporganizer.adapters;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
 
 import com.ks.triporganizer.R;
 import com.ks.triporganizer.pojo.TripDetails;
+import com.ks.triporganizer.pojo.User;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,6 +35,7 @@ public class TripDetailsAdapter extends BaseExpandableListAdapter {
     Context context;
     LayoutInflater layoutInflater;
     private List<String> tasks;
+    TripDetails tripDetails;
 
     public TripDetailsAdapter(Context context, LayoutInflater layoutInflater, long tripId, List<String> tasks) {
         this.context = context;
@@ -49,7 +53,8 @@ public class TripDetailsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 0;
+        String task = tasks.get(groupPosition);
+        return 4;
     }
 
     @Override
@@ -69,7 +74,7 @@ public class TripDetailsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return 0;
+        return childPosition;
     }
 
     @Override
@@ -79,12 +84,42 @@ public class TripDetailsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        return null;
+
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(R.layout.expandable_group_layout, null);
+        }
+
+        TextView item = (TextView) convertView.findViewById(R.id.txt1);
+        item.setTypeface(null, Typeface.BOLD);
+        item.setText(tasks.get(groupPosition));
+        return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        return null;
+        String task = tasks.get(groupPosition);
+        StringBuilder sb = new StringBuilder();
+        switch(task) {
+            case "Users":
+                List<User> users = tripDetails.getUsers();
+                if (users == null) sb.append("No Users yet!");
+                else {
+                    for (User u : users) {
+                        sb.append(u.getFirstName());
+                        sb.append(" ");
+                    }
+                }
+                break;
+        }
+
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(R.layout.expandable_task_layout, null);
+        }
+
+        TextView textView = (TextView) convertView.findViewById(R.id.txtChld1);
+        textView.setText(sb.toString());
+
+        return convertView;
     }
 
     @Override
@@ -110,7 +145,8 @@ public class TripDetailsAdapter extends BaseExpandableListAdapter {
 
         @Override
         protected void onPostExecute(TripDetails details) {
-
+            System.out.println(details);
+            tripDetails = details;
         }
     }
 }

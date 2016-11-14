@@ -14,8 +14,10 @@
         android:layout_height="wrap_content"
         android:text="@string/intro_text"
         android:id="@+id/introText"
-        android:layout_toStartOf="@+id/loginRegister"
-        android:layout_alignEnd="@+id/loginRegister" />
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:layout_alignEnd="@+id/email"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/email" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -28,12 +30,43 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="37dp" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="password"
+        android:ems="10"
+        android:id="@+id/pwd"
+        android:layout_below="@+id/email"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login/Register"
+        android:text="Login"
         android:id="@+id/loginRegister"
-        android:layout_below="@+id/email"
+        android:onClick="login"
         android:layout_centerHorizontal="true"
-        android:onClick="login"/>
+        android:layout_below="@+id/pwd" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New member?"
+        android:id="@+id/registerLink"
+        android:layout_alignStart="@+id/pwd"
+        android:layout_below="@+id/loginRegister" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register Here!"
+        android:id="@+id/regHere"
+        android:layout_alignBottom="@+id/registerLink"
+        android:layout_alignEnd="@+id/pwd"
+        android:layout_toEndOf="@+id/registerLink"
+        android:layout_below="@+id/loginRegister"
+        android:layout_marginLeft="10dp"/>
+
 </RelativeLayout>
